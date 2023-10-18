@@ -13,6 +13,7 @@ public class Main {
 
     public static void main(String[] args) {
         // реализуйте алгоритм здесь
+        List<User> allUsers;
 
 //        Создание таблицы User(ов)
         userService.createUsersTable();
@@ -20,12 +21,23 @@ public class Main {
 //        Добавление 4 User(ов) в таблицу с данными на свой выбор.
 //        После каждого добавления должен быть вывод в консоль ( User с именем – name добавлен в базу данных).
         userService.saveUser("Petr", "Romanov", (byte) 50);
+        allUsers = userService.getAllUsers();
+        System.out.printf("User с именем – %s добавлен в базу данных%n", (allUsers.get(allUsers.size() - 1)).getName());
+
         userService.saveUser("Bill", "Gates", (byte) 55);
+        allUsers = userService.getAllUsers();
+        System.out.printf("User с именем – %s добавлен в базу данных%n", (allUsers.get(allUsers.size() - 1)).getName());
+
         userService.saveUser("Misha", "Lomonosov", (byte) 15);
+        allUsers = userService.getAllUsers();
+        System.out.printf("User с именем – %s добавлен в базу данных%n", (allUsers.get(allUsers.size() - 1)).getName());
+
         userService.saveUser("Casual", "Passerby", (byte) 100);
+        allUsers = userService.getAllUsers();
+        System.out.printf("User с именем – %s добавлен в базу данных%n", (allUsers.get(allUsers.size() - 1)).getName());
 
 //        Получение всех User из базы и вывод в консоль ( должен быть переопределен toString в классе User)
-        List<User> allUsers = userService.getAllUsers();
+        allUsers = userService.getAllUsers();
         allUsers.forEach(System.out::println);
 
 //        Очистка таблицы User(ов)

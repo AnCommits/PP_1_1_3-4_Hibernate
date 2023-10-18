@@ -72,9 +72,11 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, lastName);
             preparedStatement.setInt(3, age);
-            if (preparedStatement.executeUpdate() == 1) {
-                System.out.printf("User с именем – %s добавлен в базу данных%n", name);
-            }
+//            if (preparedStatement.executeUpdate() == 1) {
+//                System.out.printf("User с именем – %s добавлен в базу данных%n", name);
+//            }
+            // moved to main
+            preparedStatement.executeUpdate();
             connection.commit();
         } catch (SQLException e) {
             try {
