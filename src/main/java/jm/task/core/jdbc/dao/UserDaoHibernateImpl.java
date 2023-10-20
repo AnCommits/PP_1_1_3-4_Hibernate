@@ -31,20 +31,11 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void createUsersTable() {
-        final String CREATE_TABLE =
-                "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +
-                        "(" +
-                        ID + " BIGINT PRIMARY KEY AUTO_INCREMENT, " +
-                        NAME + " VARCHAR(30), " +
-                        LASTNAME + " VARCHAR(30), " +
-                        AGE + " TINYINT" +
-                        ")";
         execute(CREATE_TABLE);
     }
 
     @Override
     public void dropUsersTable() {
-        final String DELETE_TABLE = String.format("DROP TABLE IF EXISTS %s", TABLE_NAME);
         execute(DELETE_TABLE);
     }
 
@@ -90,7 +81,6 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void cleanUsersTable() {
-        final String DELETE_ALL_ENTRIES = String.format("DELETE FROM %s;", TABLE_NAME);
         execute(DELETE_ALL_ENTRIES);
     }
 

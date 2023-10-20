@@ -17,5 +17,6 @@ public interface UserService {
 
     void cleanUsersTable();
 
+    // Returns the last user from DB
     User getLastRecord();
 }
