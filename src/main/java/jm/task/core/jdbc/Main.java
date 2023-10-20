@@ -23,7 +23,7 @@ public class Main {
 //        После каждого добавления должен быть вывод в консоль ( User с именем – name добавлен в базу данных).
 
         BiConsumer<User, User> printSavingUser = (u1, u2) -> {
-            if (!Objects.equals(u1.getId(), u2.getId())) {
+            if (u2 != null && (u1 == null || !u1.getId().equals(u2.getId()))) {
                 System.out.printf("User с именем – %s %s добавлен в базу данных%n",
                         u2.getName(), u2.getLastName());
             }

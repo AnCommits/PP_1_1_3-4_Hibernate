@@ -9,13 +9,6 @@ import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
 
-    private static final String TABLE_NAME = "users";
-
-    private static final String ID = "id";
-    private static final String NAME = "name";
-    private static final String LASTNAME = "lastName";
-    private static final String AGE = "age";
-
     private static Connection connection = Util.getConnection();
 
     public UserDaoJDBCImpl() {
@@ -125,10 +118,6 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public User getLastRecord() {
-        final String GET_LAST_USER = String.format(
-                "SELECT * FROM %1$s WHERE %2$s = (SELECT MAX(%2$s) from %1$s);",
-                TABLE_NAME, ID);
-
         User user = null;
         try {
             Statement statement = connection.createStatement();

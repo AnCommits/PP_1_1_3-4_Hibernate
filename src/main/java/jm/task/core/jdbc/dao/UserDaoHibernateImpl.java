@@ -10,13 +10,7 @@ import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
 
-    private static final String TABLE_NAME = "users";
     private static final SessionFactory sessionFactory = Util.getSessionFactory();
-
-    private static final String ID = "id";
-    private static final String NAME = "name";
-    private static final String LASTNAME = "lastName";
-    private static final String AGE = "age";
 
     public UserDaoHibernateImpl() {
     }
@@ -61,8 +55,6 @@ public class UserDaoHibernateImpl implements UserDao {
             transaction = session.beginTransaction();
             session.save(new User(name, lastName, age));
             transaction.commit();
-//            System.out.printf("User с именем – %s добавлен в базу данных%n", name);
-            // moved to main
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -104,6 +96,12 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public User getLastRecord() {
+        try (Session session = sessionFactory.openSession()) {
+            List<User> users = session.createNativeQuery(GET_LAST_USER, User.class).list();
+            if (!users.isEmpty()) {
+                return users.get(0);
+            }
+        }
         return null;
     }
 }

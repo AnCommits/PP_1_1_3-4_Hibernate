@@ -5,6 +5,18 @@ import jm.task.core.jdbc.model.User;
 import java.util.List;
 
 public interface UserDao {
+
+    String TABLE_NAME = "users";
+
+    String ID = "id";
+    String NAME = "name";
+    String LASTNAME = "lastName";
+    String AGE = "age";
+
+    String GET_LAST_USER = String.format(
+            "SELECT * FROM %1$s WHERE %2$s = (SELECT MAX(%2$s) from %1$s);",
+            TABLE_NAME, ID);
+
     void createUsersTable();
 
     void dropUsersTable();
