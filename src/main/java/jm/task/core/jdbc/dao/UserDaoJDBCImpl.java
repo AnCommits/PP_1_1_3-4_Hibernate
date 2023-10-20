@@ -72,10 +72,6 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, lastName);
             preparedStatement.setInt(3, age);
-//            if (preparedStatement.executeUpdate() == 1) {
-//                System.out.printf("User с именем – %s добавлен в базу данных%n", name);
-//            }
-            // moved to main
             preparedStatement.executeUpdate();
             connection.commit();
         } catch (SQLException e) {
@@ -98,25 +94,6 @@ public class UserDaoJDBCImpl implements UserDao {
     public void removeUserById(long id) {
         final String REMOVE_BY_ID = String.format("DELETE FROM %s WHERE id = %d;", TABLE_NAME, id);
         execute(REMOVE_BY_ID);
-        try {
-            connection.setAutoCommit(false);
-            PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_BY_ID);
-            preparedStatement.executeUpdate();
-            connection.commit();
-        } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override
@@ -145,5 +122,26 @@ public class UserDaoJDBCImpl implements UserDao {
     public void cleanUsersTable() {
         final String DELETE_ALL_ENTRIES = String.format("DELETE FROM %s;", TABLE_NAME);
         execute(DELETE_ALL_ENTRIES);
+    }
+
+    public User getLastRecord() {
+        final String GET_LAST_USER = String.format(
+                "SELECT * FROM %1$s WHERE %2$s = (SELECT MAX(%2$s) from %1$s);",
+                TABLE_NAME, ID);
+
+        User user = null;
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(GET_LAST_USER);
+            if (resultSet.next()) {
+                user = new User(resultSet.getString(NAME),
+                        resultSet.getString(LASTNAME),
+                        resultSet.getByte(AGE));
+                user.setId(resultSet.getLong(ID));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 }

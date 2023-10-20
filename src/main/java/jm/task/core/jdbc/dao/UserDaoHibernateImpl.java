@@ -101,4 +101,9 @@ public class UserDaoHibernateImpl implements UserDao {
         final String DELETE_ALL_ENTRIES = String.format("DELETE FROM %s;", TABLE_NAME);
         execute(DELETE_ALL_ENTRIES);
     }
+
+    @Override
+    public User getLastRecord() {
+        return null;
+    }
 }

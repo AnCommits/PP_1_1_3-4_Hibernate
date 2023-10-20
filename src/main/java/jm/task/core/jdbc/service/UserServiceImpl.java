@@ -8,8 +8,8 @@ import jm.task.core.jdbc.model.User;
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
-    private static final UserDao userDao = new UserDaoHibernateImpl();
-//    private static final UserDao userDao = new UserDaoJDBCImpl();
+//    private static final UserDao userDao = new UserDaoHibernateImpl();
+    private static final UserDao userDao = new UserDaoJDBCImpl();
 
     public void createUsersTable() {
         userDao.createUsersTable();
@@ -33,5 +33,10 @@ public class UserServiceImpl implements UserService {
 
     public void cleanUsersTable() {
         userDao.cleanUsersTable();
+    }
+
+    @Override
+    public User getLastRecord() {
+        return userDao.getLastRecord();
     }
 }
