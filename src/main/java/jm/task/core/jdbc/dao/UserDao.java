@@ -24,12 +24,6 @@ public interface UserDao {
 
     String DELETE_TABLE = String.format("DROP TABLE IF EXISTS %s", TABLE_NAME);
 
-    String DELETE_ALL_ENTRIES = String.format("DELETE FROM %s;", TABLE_NAME);
-
-    String GET_LAST_USER = String.format(
-            "SELECT * FROM %1$s WHERE %2$s = (SELECT MAX(%2$s) from %1$s);",
-            TABLE_NAME, ID);
-
     void createUsersTable();
 
     void dropUsersTable();

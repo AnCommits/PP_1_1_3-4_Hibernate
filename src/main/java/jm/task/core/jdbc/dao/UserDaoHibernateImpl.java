@@ -5,8 +5,12 @@ import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class UserDaoHibernateImpl implements UserDao {
 
@@ -81,17 +85,27 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void cleanUsersTable() {
-        execute(DELETE_ALL_ENTRIES);
+        String DELETE_ALL_ENTRIES = "DELETE FROM User";
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            session.createQuery(DELETE_ALL_ENTRIES).executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
     }
 
     @Override
     public User getLastRecord() {
+        String hql = String.format("from User order by %s desc", ID);
         try (Session session = sessionFactory.openSession()) {
-            List<User> users = session.createNativeQuery(GET_LAST_USER, User.class).list();
-            if (!users.isEmpty()) {
-                return users.get(0);
-            }
+            Query<User> query = session.createQuery(hql, User.class);
+            query.setMaxResults(1);
+            return query.uniqueResultOptional().orElse(null);
         }
-        return null;
     }
 }

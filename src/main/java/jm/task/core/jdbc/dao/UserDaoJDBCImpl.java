@@ -104,11 +104,15 @@ public class UserDaoJDBCImpl implements UserDao {
 
     @Override
     public void cleanUsersTable() {
+        String DELETE_ALL_ENTRIES = String.format("DELETE FROM %s", TABLE_NAME);
         execute(DELETE_ALL_ENTRIES);
     }
 
     @Override
     public User getLastRecord() {
+        String GET_LAST_USER = String.format(
+                "SELECT * FROM %1$s WHERE %2$s = (SELECT MAX(%2$s) from %1$s);",
+                TABLE_NAME, ID);
         User user = null;
         try {
             Statement statement = connection.createStatement();

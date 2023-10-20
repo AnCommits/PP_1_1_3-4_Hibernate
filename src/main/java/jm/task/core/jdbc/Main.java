@@ -6,7 +6,6 @@ import jm.task.core.jdbc.service.UserServiceImpl;
 import jm.task.core.jdbc.util.Util;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.BiConsumer;
 
 public class Main {
@@ -52,18 +51,27 @@ public class Main {
         lastUserAfterSaving = userService.getLastRecord();
         printSavingUser.accept(lastUserBeforeSaving, lastUserAfterSaving);
 
+        userService.removeUserById(2);
+        userService.removeUserById(2);
+
+        System.out.println("==================================");
+
 //        Получение всех User из базы и вывод в консоль ( должен быть переопределен toString в классе User)
         List<User> allUsers = userService.getAllUsers();
         allUsers.forEach(System.out::println);
 
+        System.out.println("==================================");
 //        Очистка таблицы User(ов)
         userService.cleanUsersTable();
+
+        userService.getAllUsers().forEach(System.out::println);
+        System.out.println("==================================");
 
 //        Удаление таблицы
         userService.dropUsersTable();
 
-//        Util.closeSessionFactory();
-        Util.closeConnection();
+        Util.closeSessionFactory();
+//        Util.closeConnection();
     }
 }
 
