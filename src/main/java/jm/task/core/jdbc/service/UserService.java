@@ -19,4 +19,7 @@ public interface UserService {
 
     // Returns the last user from DB
     User getLastRecord();
+
+    // Saves user into DB and returns user's id
+    Long saveUserAndGetId(String name, String lastName, byte age);
 }

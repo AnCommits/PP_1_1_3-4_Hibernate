@@ -8,8 +8,8 @@ import jm.task.core.jdbc.model.User;
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
-    private static final UserDao userDao = new UserDaoHibernateImpl();
-//    private static final UserDao userDao = new UserDaoJDBCImpl();
+//    private static final UserDao userDao = new UserDaoHibernateImpl();
+    private static final UserDao userDao = new UserDaoJDBCImpl();
 
     @Override
     public void createUsersTable() {
@@ -44,5 +44,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getLastRecord() {
         return userDao.getLastRecord();
+    }
+
+    @Override
+    public Long saveUserAndGetId(String name, String lastName, byte age) {
+        return userDao.saveUserAndGetId(name, lastName, age);
     }
 }

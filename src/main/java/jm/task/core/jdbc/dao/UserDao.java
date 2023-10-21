@@ -38,4 +38,6 @@ public interface UserDao {
 
     // Returns the last user from DB
     User getLastRecord();
+
+    Long saveUserAndGetId(String name, String lastName, byte age);
 }

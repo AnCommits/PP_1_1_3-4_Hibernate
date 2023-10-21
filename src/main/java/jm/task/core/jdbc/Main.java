@@ -6,11 +6,14 @@ import jm.task.core.jdbc.service.UserServiceImpl;
 import jm.task.core.jdbc.util.Util;
 
 import java.util.List;
-import java.util.function.BiConsumer;
 
 public class Main {
 
     private static final UserService userService = new UserServiceImpl();
+
+    public static UserService getUserService() {
+        return userService;
+    }
 
     public static void main(String[] args) {
         // реализуйте алгоритм здесь
@@ -21,38 +24,33 @@ public class Main {
 //        Добавление 4 User(ов) в таблицу с данными на свой выбор.
 //        После каждого добавления должен быть вывод в консоль ( User с именем – name добавлен в базу данных).
 
-        BiConsumer<User, User> printSavingUser = (u1, u2) -> {
-            if (u2 != null && (u1 == null || !u1.getId().equals(u2.getId()))) {
-                System.out.printf("User с именем – %s %s добавлен в базу данных%n",
-                        u2.getName(), u2.getLastName());
-            }
-        };
+        Long id;
+        id = userService.saveUserAndGetId("Petr", "Romanov", (byte) 50);
+        if (id != null) {
+            Util.printSavedUser();
+        }
 
-        User lastUserBeforeSaving;
-        User lastUserAfterSaving;
+        id = userService.saveUserAndGetId("Bill", "Gates", (byte) 55);
+        if (id != null) {
+            Util.printSavedUser();
+        }
 
-        lastUserBeforeSaving = userService.getLastRecord();
-        userService.saveUser("Petr", "Romanov", (byte) 50);
-        lastUserAfterSaving = userService.getLastRecord();
-        printSavingUser.accept(lastUserBeforeSaving, lastUserAfterSaving);
+        id = userService.saveUserAndGetId("Misha", "Lomonosov", (byte) 15);
+        if (id != null) {
+            Util.printSavedUser();
+        }
 
-        lastUserBeforeSaving = userService.getLastRecord();
-        userService.saveUser("Bill", "Gates", (byte) 55);
-        lastUserAfterSaving = userService.getLastRecord();
-        printSavingUser.accept(lastUserBeforeSaving, lastUserAfterSaving);
+        id = userService.saveUserAndGetId("Casual", "Passerby", (byte) 100);
+        if (id != null) {
+            Util.printSavedUser();
+        }
 
-        lastUserBeforeSaving = userService.getLastRecord();
-        userService.saveUser("Misha", "Lomonosov", (byte) 15);
-        lastUserAfterSaving = userService.getLastRecord();
-        printSavingUser.accept(lastUserBeforeSaving, lastUserAfterSaving);
+        // Удаляем юзера (возможно несуществующего)
+        id = 3L;
+        userService.removeUserById(id);
 
-        lastUserBeforeSaving = userService.getLastRecord();
-        userService.saveUser("Casual", "Passerby", (byte) 100);
-        lastUserAfterSaving = userService.getLastRecord();
-        printSavingUser.accept(lastUserBeforeSaving, lastUserAfterSaving);
-
-        userService.removeUserById(2);
-        userService.removeUserById(2);
+        // Удаляем несуществующего юзера
+        userService.removeUserById(id);
 
         System.out.println("==================================");
 
@@ -64,14 +62,14 @@ public class Main {
 //        Очистка таблицы User(ов)
         userService.cleanUsersTable();
 
+        // Убеждаемся, что таблица пустая
         userService.getAllUsers().forEach(System.out::println);
         System.out.println("==================================");
 
 //        Удаление таблицы
         userService.dropUsersTable();
 
-        Util.closeSessionFactory();
-//        Util.closeConnection();
+//        Util.closeSessionFactory();
+        Util.closeConnection();
     }
 }
-

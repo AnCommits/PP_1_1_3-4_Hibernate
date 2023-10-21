@@ -1,5 +1,6 @@
 package jm.task.core.jdbc.util;
 
+import jm.task.core.jdbc.Main;
 import jm.task.core.jdbc.model.User;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -61,5 +62,11 @@ public class Util {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void printSavedUser() {
+        User user = Main.getUserService().getLastRecord();
+        System.out.printf("User с именем – %s %s добавлен в базу данных%n",
+                user.getName(), user.getLastName());
     }
 }
