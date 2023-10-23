@@ -1,5 +1,6 @@
 package jm.task.core.jdbc.dao;
 
+import jm.task.core.jdbc.DBException;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 
@@ -47,8 +48,33 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     @Override
-    public void saveUser(String name, String lastName, byte age) {
-        saveUserAndGetId(name, lastName, age);
+    public void saveUser(String name, String lastName, byte age) throws DBException {
+        final String SAVE_USER = String.format("INSERT INTO %s (%s, %s, %s) VALUES (?, ?, ?)",
+                TABLE_NAME, NAME, LASTNAME, AGE);
+        try {
+            connection.setAutoCommit(false);
+            PreparedStatement preparedStatement = connection.prepareStatement(SAVE_USER);
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, lastName);
+            preparedStatement.setInt(3, age);
+            preparedStatement.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            try {
+                e.printStackTrace();
+                connection.rollback();
+                throw new DBException("Failed to save. Transaction rollbacked.");
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                throw new DBException("Failed to save. Transaction failed to rollback.");
+            }
+        } finally {
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -104,41 +130,5 @@ public class UserDaoJDBCImpl implements UserDao {
             e.printStackTrace();
         }
         return user;
-    }
-
-    @Override
-    public Long saveUserAndGetId(String name, String lastName, byte age) {
-        final String SAVE_USER = String.format("INSERT INTO %s (%s, %s, %s) VALUES (?, ?, ?)",
-            TABLE_NAME, NAME, LASTNAME, AGE);
-        Long id =null;
-        try {
-            connection.setAutoCommit(false);
-            PreparedStatement preparedStatement = connection.prepareStatement(SAVE_USER);
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, lastName);
-            preparedStatement.setInt(3, age);
-            preparedStatement.executeUpdate();
-            connection.commit();
-            final String MAX_ID = String.format("SELECT MAX(%s) as maxId from %s", ID, TABLE_NAME);
-            preparedStatement = connection.prepareStatement(MAX_ID);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                id = resultSet.getLong("maxId");
-            }
-        } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-            e.printStackTrace();
-        } finally {
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return id;
     }
 }

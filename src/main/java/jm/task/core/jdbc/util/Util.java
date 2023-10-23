@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class Util {
-    // реализуйте настройку соеденения с БД
+    // реализуйте настройку соеднения с БД
 
     private static final String PATH_TO_DB_PROPERTIES = "src/main/resources/database.properties";
 
@@ -62,11 +62,5 @@ public class Util {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void printSavedUser() {
-        User user = Main.getUserService().getLastRecord();
-        System.out.printf("User с именем – %s %s добавлен в базу данных%n",
-                user.getName(), user.getLastName());
     }
 }

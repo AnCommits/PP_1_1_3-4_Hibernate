@@ -1,5 +1,6 @@
 package jm.task.core.jdbc.dao;
 
+import jm.task.core.jdbc.DBException;
 import jm.task.core.jdbc.model.User;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public interface UserDao {
 
     void dropUsersTable();
 
-    void saveUser(String name, String lastName, byte age);
+    void saveUser(String name, String lastName, byte age) throws DBException;
 
     void removeUserById(long id);
 
@@ -38,6 +39,4 @@ public interface UserDao {
 
     // Returns the last user from DB
     User getLastRecord();
-
-    Long saveUserAndGetId(String name, String lastName, byte age);
 }

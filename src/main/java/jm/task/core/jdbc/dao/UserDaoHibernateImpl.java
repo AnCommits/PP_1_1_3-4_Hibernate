@@ -1,5 +1,6 @@
 package jm.task.core.jdbc.dao;
 
+import jm.task.core.jdbc.DBException;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
@@ -7,10 +8,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 public class UserDaoHibernateImpl implements UserDao {
 
@@ -44,8 +42,19 @@ public class UserDaoHibernateImpl implements UserDao {
     }
 
     @Override
-    public void saveUser(String name, String lastName, byte age) {
-        saveUserAndGetId(name, lastName, age);
+    public void saveUser(String name, String lastName, byte age) throws DBException {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            session.save(new User(name, lastName, age));
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw new DBException("Failed to save. Transaction rollbacked.");
+        }
     }
 
     @Override
@@ -97,22 +106,5 @@ public class UserDaoHibernateImpl implements UserDao {
             query.setMaxResults(1);
             return query.uniqueResultOptional().orElse(null);
         }
-    }
-
-    @Override
-    public Long saveUserAndGetId(String name, String lastName, byte age) {
-        Long id = null;
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            id = (Long) session.save(new User(name, lastName, age));
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        }
-        return id;
     }
 }

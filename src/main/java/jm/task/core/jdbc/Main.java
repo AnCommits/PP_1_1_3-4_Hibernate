@@ -11,10 +11,6 @@ public class Main {
 
     private static final UserService userService = new UserServiceImpl();
 
-    public static UserService getUserService() {
-        return userService;
-    }
-
     public static void main(String[] args) {
         // реализуйте алгоритм здесь
 
@@ -24,28 +20,36 @@ public class Main {
 //        Добавление 4 User(ов) в таблицу с данными на свой выбор.
 //        После каждого добавления должен быть вывод в консоль ( User с именем – name добавлен в базу данных).
 
-        Long id;
-        id = userService.saveUserAndGetId("Petr", "Romanov", (byte) 50);
-        if (id != null) {
-            Util.printSavedUser();
+        try {
+            userService.saveUser("Petr", "Romanov", (byte) 50);
+            userService.printLastUser();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        id = userService.saveUserAndGetId("Bill", "Gates", (byte) 55);
-        if (id != null) {
-            Util.printSavedUser();
+        try {
+            userService.saveUser("Bill", "Gates", (byte) 55);
+            userService.printLastUser();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        id = userService.saveUserAndGetId("Misha", "Lomonosov", (byte) 15);
-        if (id != null) {
-            Util.printSavedUser();
+        try {
+            userService.saveUser("Misha", "Lomonosov", (byte) 15);
+            userService.printLastUser();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        id = userService.saveUserAndGetId("Casual", "Passerby", (byte) 100);
-        if (id != null) {
-            Util.printSavedUser();
+        try {
+            userService.saveUser("Casual", "Passerby", (byte) 100);
+            userService.printLastUser();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         // Удаляем юзера (возможно несуществующего)
+        long id;
         id = 3L;
         userService.removeUserById(id);
 
@@ -69,7 +73,7 @@ public class Main {
 //        Удаление таблицы
         userService.dropUsersTable();
 
-//        Util.closeSessionFactory();
-        Util.closeConnection();
+        Util.closeSessionFactory();
+//        Util.closeConnection();
     }
 }
